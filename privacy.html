@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy — Color Match Move</title>
+    <meta name="description" content="How Color Match Move handles your information. No data collection from the app.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg0: #070a12;
+            --bg1: #101529;
+            --mint: #3dffce;
+            --pink: #ff4d8d;
+            --lilac: #a78bfa;
+            --text: #eef2ff;
+            --muted: rgba(238, 242, 255, 0.62);
+            --panel: rgba(20, 26, 48, 0.92);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: var(--bg0);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.65;
+        }
+
+        .page-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                conic-gradient(from 200deg at 70% 10%, rgba(167, 139, 250, 0.15), transparent 40%),
+                conic-gradient(from -40deg at 15% 90%, rgba(61, 255, 206, 0.1), transparent 45%),
+                radial-gradient(ellipse 90% 70% at 50% -10%, rgba(255, 77, 141, 0.12), transparent 55%),
+                linear-gradient(180deg, var(--bg0), var(--bg1));
+            pointer-events: none;
+        }
+
+        .grid-dots {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            opacity: 0.07;
+            background-image: radial-gradient(circle, #fff 1px, transparent 1px);
+            background-size: 22px 22px;
+            pointer-events: none;
+        }
+
+        .shell {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 36px 22px 72px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 28px;
+        }
+
+        @media (min-width: 840px) {
+            .shell {
+                grid-template-columns: 220px 1fr;
+                align-items: start;
+                padding-top: 48px;
+            }
+        }
+
+        .side {
+            position: sticky;
+            top: 28px;
+        }
+
+        @media (max-width: 839px) {
+            .side { position: static; }
+        }
+
+        .brand {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.35rem;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .brand .w1 { color: var(--mint); }
+        .brand .w2 { color: var(--pink); }
+        .brand .w3 { color: var(--lilac); }
+
+        .side-meta {
+            font-size: 0.82rem;
+            color: var(--muted);
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .toc {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .toc a {
+            display: block;
+            padding: 10px 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 0.88rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+
+        .toc a:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .main {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 32px 28px 36px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+        }
+
+        @media (min-width: 640px) {
+            .main { padding: 40px 40px 44px; }
+        }
+
+        .hero-privacy {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+
+        @media (min-width: 560px) {
+            .hero-privacy {
+                grid-template-columns: 1fr 1fr;
+                gap: 18px;
+            }
+        }
+
+        .hero-card {
+            border-radius: 18px;
+            padding: 22px 20px;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .hero-card h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .hero-card p {
+            font-size: 0.88rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.5;
+        }
+
+        .hc-a {
+            background: linear-gradient(145deg, rgba(61, 255, 206, 0.25), rgba(20, 26, 48, 0.9));
+            border: 1px solid rgba(61, 255, 206, 0.35);
+        }
+
+        .hc-b {
+            background: linear-gradient(145deg, rgba(255, 77, 141, 0.22), rgba(20, 26, 48, 0.9));
+            border: 1px solid rgba(255, 77, 141, 0.3);
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 28px 0 8px;
+            font-size: 0.9rem;
+        }
+
+        .summary-table th,
+        .summary-table td {
+            text-align: left;
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .summary-table th {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .pill-ok {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(61, 255, 206, 0.15);
+            color: var(--mint);
+            font-weight: 700;
+            font-size: 0.78rem;
+        }
+
+        section {
+            margin-top: 36px;
+            scroll-margin-top: 24px;
+        }
+
+        section:first-of-type { margin-top: 0; }
+
+        .sec-label {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--pink);
+            margin-bottom: 10px;
+        }
+
+        section h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 14px;
+        }
+
+        section p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        section p:last-child { margin-bottom: 0; }
+
+        section ul {
+            margin: 12px 0 0;
+            padding-left: 1.15rem;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        section li { margin-bottom: 8px; }
+
+        section a {
+            color: var(--mint);
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(61, 255, 206, 0.35);
+        }
+
+        section a:hover { border-bottom-color: var(--mint); }
+
+        .note {
+            margin-top: 16px;
+            padding: 16px 18px;
+            border-radius: 14px;
+            background: rgba(167, 139, 250, 0.1);
+            border: 1px solid rgba(167, 139, 250, 0.25);
+            font-size: 0.9rem;
+            color: rgba(238, 242, 255, 0.85);
+        }
+
+        .back {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .back a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--lilac);
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 999px;
+            border: 1px solid rgba(167, 139, 250, 0.35);
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .back a:hover {
+            background: rgba(167, 139, 250, 0.12);
+            color: var(--text);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-bg" aria-hidden="true"></div>
+    <div class="grid-dots" aria-hidden="true"></div>
+
+    <div class="shell">
+        <aside class="side">
+            <p class="brand"><span class="w1">Color</span> <span class="w2">Match</span> <span class="w3">Move</span></p>
+            <p class="side-meta">Privacy overview · Effective March 2026</p>
+            <nav aria-label="On this page">
+                <ul class="toc">
+                    <li><a href="#at-a-glance">At a glance</a></li>
+                    <li><a href="#who">Who we are</a></li>
+                    <li><a href="#collection">What we collect</a></li>
+                    <li><a href="#device">On your device</a></li>
+                    <li><a href="#third">Apple &amp; links</a></li>
+                    <li><a href="#kids">Kids &amp; rating</a></li>
+                    <li><a href="#changes">Updates</a></li>
+                    <li><a href="#reach">Questions</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="main">
+            <header class="hero-privacy" id="at-a-glance">
+                <div class="hero-card hc-a">
+                    <h2>Built for play, not profiling</h2>
+                    <p>Color Match Move is a casual puzzle experience. This page explains what happens with information when you use the game.</p>
+                </div>
+                <div class="hero-card hc-b">
+                    <h2>No player data harvesting</h2>
+                    <p>As listed on the App Store, the developer does not collect data from this app. Details below spell out what that means in practice.</p>
+                </div>
+            </header>
+
+            <table class="summary-table" aria-label="Data handling summary">
+                <thead>
+                    <tr>
+                        <th scope="col">Topic</th>
+                        <th scope="col">Color Match Move</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Personal identifiers</td>
+                        <td><span class="pill-ok">Not collected</span></td>
+                    </tr>
+                    <tr>
+                        <td>Usage &amp; analytics</td>
+                        <td><span class="pill-ok">Not collected</span></td>
+                    </tr>
+                    <tr>
+                        <td>Location</td>
+                        <td><span class="pill-ok">Not collected</span></td>
+                    </tr>
+                    <tr>
+                        <td>Advertising IDs</td>
+                        <td><span class="pill-ok">Not collected</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <section id="who">
+                <p class="sec-label">Publisher</p>
+                <h2>Who provides this game</h2>
+                <p><strong>Color Match Move</strong> is offered by <strong>Aaqib Javed</strong>. This privacy statement applies to the mobile app distributed on Apple’s App Store and to this promotional site when it describes the same product.</p>
+            </section>
+
+            <section id="collection">
+                <p class="sec-label">Collection</p>
+                <h2>What we collect from you</h2>
+                <p>We do not collect, transmit, or sell personal data through Color Match Move. That includes:</p>
+                <ul>
+                    <li>Name, email, phone number, or social accounts</li>
+                    <li>Precise or coarse location</li>
+                    <li>Advertising identifiers or cross-app tracking signals</li>
+                    <li>Diagnostics, crash reports, or analytics tied to your identity (we do not run such collection in-app)</li>
+                    <li>Gameplay telemetry uploaded to our servers (we do not operate gameplay data backends for this title as described here)</li>
+                </ul>
+                <div class="note">If Apple’s systems process limited technical data when you download or update the app (for example billing or fraud prevention), that processing is governed by Apple’s policies, not by us as app data collection.</div>
+            </section>
+
+            <section id="device">
+                <p class="sec-label">Local only</p>
+                <h2>What stays on your device</h2>
+                <p>Like many puzzle games, Color Match Move may store progress, preferences, or similar settings locally on your phone or tablet. That information remains on the device unless the operating system provides its own sync or backup features outside our control.</p>
+                <p>Removing the app typically deletes app-specific local data. Restoring from a device backup may bring saved progress back—again, that is handled by your device and Apple’s ecosystem, not by us collecting it remotely.</p>
+            </section>
+
+            <section id="third">
+                <p class="sec-label">Ecosystem</p>
+                <h2>App Store &amp; external pages</h2>
+                <p>Purchases, updates, and reviews go through Apple. Their privacy rules apply to those interactions. If you open links (for example to the App Store listing or a hosted privacy document), the destination site’s policy governs that visit.</p>
+                <p>The developer’s hosted privacy document is available here: <a href="https://doc-hosting.flycricket.io/color-match-move/9a332ee0-b0b9-4324-a439-df048ef27280/privacy" target="_blank" rel="noopener noreferrer">hosted privacy policy</a>.</p>
+            </section>
+
+            <section id="kids">
+                <p class="sec-label">Families</p>
+                <h2>Age rating &amp; younger players</h2>
+                <p>Color Match Move is rated <strong>4+</strong> on the App Store. We do not knowingly collect personal information from anyone because the app is not designed to gather such data. Parents and guardians remain in control of device settings, Screen Time, and App Store accounts.</p>
+            </section>
+
+            <section id="changes">
+                <p class="sec-label">Revisions</p>
+                <h2>When this text changes</h2>
+                <p>We may update this page to reflect product or legal clarifications. The effective date at the top of the sidebar will change when we do. Material changes will be reflected in the updated wording; continued use of the game after an update means you accept the revised description.</p>
+            </section>
+
+            <section id="reach">
+                <p class="sec-label">Contact</p>
+                <h2>Questions about privacy</h2>
+                <p>For privacy questions specifically about Color Match Move, contact the developer through the support or contact options shown on the App Store product page, or refer to the hosted policy link above.</p>
+            </section>
+
+            <div class="back">
+                <a href="index.html">← Color Match Move home</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
